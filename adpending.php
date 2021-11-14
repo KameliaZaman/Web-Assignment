@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pending</title>
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="icon" type="image/x-icon" href="technical-support.png" />
+  <!---font-family--->
+  <link href="https://fonts.googleapis.com/css2?family=Galada&display=swap" rel="stylesheet">
+  <!---bootstrap--> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script
+      src="https://use.fontawesome.com/releases/v5.13.0/js/all.js"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+   <div class="jumbotron text-center" style="margin-bottom:-30px;margin-top:-30px;">
+  <img src="technical-support.png"class="img1"><h1 class="hire1">Hire A Helper</h1>
+</div>
+
+<nav class="navbar navbar-expand-lg navbar-light">
+  <a class="navbar-brand" href="adhome.php">Home</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="aduser.php">Users</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="adpending.php">Pending</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="adcomplete.php">Complete</a>
+      </li>    
+      <li class="nav-item">
+        <a class="nav-link" href="index.php">Log Out</a>
+      </li> 
+    </ul>
+  </div>  
+</nav>
+
+<div class="container" style="margin-top:30px">
+
+      <div class="container-fluid mt-3">
+      <div class="card1 shadow mb-4">
+
+        <div class="card-body">
+
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th> User Email </th>
+                  <th> Service Name </th>
+                  <th> Approve </th>
+                </tr>
+              </thead>
+              <tbody>
+              
+              <?php
+
+          $conn = mysqli_connect("localhost", "root", "", "myService");
+
+
+          if (!$conn) {
+            die("Connection failed: ". mysqli_connect_error());
+          }
+
+
+          if(isset($_POST["add"]))
+          {
+            $a=$_POST['SID'];
+            $b=$_POST['SName'];
+            $c=$_POST['SDetails'];
+            if($a!="" && $b!="" && $c!="")
+            {
+              $query = "INSERT INTO services VALUES ('$a', '$b', '$c')";
+
+              if (mysqli_query($conn, $query)) {
+                 echo " <h3> Added! </h3>";
+              }
+            }
+
+            else{
+              echo" <h3> All fields are required! </h3>";
+            }
+          }
+
+          if(isset($_POST["delete_btn"]))
+                        {
+                          $id = $_POST['delete_id'];
+                          $id2 = $_POST['delete_id2'];
+                          $query = "INSERT INTO completed VALUES ('$id','$id2','') ";
+                          $query2 = "DELETE FROM pending WHERE UserEmail='$id' AND SName='$id2' ";
+                          $query_run = mysqli_query($conn, $query);
+                          $query_run2 = mysqli_query($conn, $query2);
+
+                          if($query_run)
+                          {
+                            if($query_run2){
+                              echo "Approved!";
+                            }
+                          } 
+                        }
+
+              $disp="select * from pending";
+              $result=mysqli_query($conn,$disp);
+              if(mysqli_num_rows($result) > 0)        
+              {
+              while($row=mysqli_fetch_array($result))
+              {
+                ?>
+                <tr>
+                  <td> <?php echo $row['UserEmail']; ?></td>
+                  <td> <?php echo $row['SName']; ?></td>
+                  <td>
+                    <form action="" method="post">
+                        <input type="hidden" name="delete_id" value="<?php echo $row['UserEmail']; ?>">
+                        <input type="hidden" name="delete_id2" value="<?php echo $row['SName']; ?>">
+                        <button type="submit" name="delete_btn" class="btn btn-danger"> Approve</button>
+                      </form>
+                  </td>
+                  </tr>
+                  
+                <?php
+              }
+            }
+            else {
+                  echo "No Record Found";
+              }
+        mysqli_close($conn);
+
+      ?>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+
+      </div>
+  
+</div>
+
+<div class="jumbotron text-center" style="margin-bottom:0 ;background-color:#0e6b28;height: 270px;">
+  <div class="address" style="margin-top:-40px;"><i class="fas fa-map-marker-alt"></i>  24th street, west London, UK 
+<br><i class="fas fa-phone"></i>  +44 1819 189000
+<br><i class="far fa-envelope-open"></i>  hireahelper364@gmail.com</div>
+  <div class="d-flex justify-content-center align-items-center">
+        <a
+          class="d-inline-flex align-items-center justify-content-center twitter"
+          href="#"
+          ><i class="fab fa-twitter"></i
+        ></a>
+        <a
+          class="d-inline-flex align-items-center justify-content-center facebook"
+          href="#"
+          ><i class="fab fa-facebook-f"></i
+        ></a>
+        <a
+          class="d-inline-flex align-items-center justify-content-center instagram"
+          href="#"
+          ><i class="fab fa-instagram"></i
+        ></a>
+      </div>
+        <p style="color: white;
+  font-size: 1.5rem;">
+          Hire A Helper &#169; 2021 
+        </p>
+</div>
+
+
+</body>
+</html>
